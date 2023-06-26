@@ -24,8 +24,9 @@ So the closest prime number to 378 is 379
 */
 uniform vec2 near_scale = vec2(37.0);
 uniform vec2 far_scale = vec2(5.0);
+uniform float diffuse_stacking = 0.5;
 uniform float minimum_blend_distance = 1.5;
-uniform float blend_distance = 3.0;
+uniform float blend_distance = 3.5;
 uniform float macro_variation_strength = 0.1;
 uniform float desaturation_strength = 0.0;
 
@@ -34,6 +35,13 @@ void fragment() {
 	vec3 diffuse_near = texture(diffuse_texture, UV * near_scale).rgb;
 	vec3 diffuse_far = texture(diffuse_texture, UV * far_scale).rgb;
 	vec3 macro_variation_map = texture(mask_texture, UV * mix(near_scale, far_scale, 0.5)).rgb;
+
+	// Diffuse texture stacking
+	float diffuse_stacking_clamped = clamp(diffuse_stacking, 0.0, 1.0);
+	vec3 tmp_diffuse_near = texture(diffuse_texture, UV * mix(near_scale, far_scale, 0.1)).rgb;
+	vec3 tmp_diffuse_far = texture(diffuse_texture, UV * mix(far_scale, near_scale, 0.05)).rgb;
+	diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_clamped);
+	diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_clamped);
 
 	// Z-buffer
 	float depth = texture(depth_texture, SCREEN_UV).x;
