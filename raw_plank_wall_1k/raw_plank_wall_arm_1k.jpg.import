@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da1yhsuk2e221"
-path.s3tc="res://.godot/imported/raw_plank_wall_diff_1k.jpg-f4f674ad052d2147723727f98230da77.s3tc.ctex"
+uid="uid://otwndad6r8rq"
+path.s3tc="res://.godot/imported/raw_plank_wall_arm_1k.jpg-b35acb79f29597e7a7a32fb91e537538.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://raw_plank_wall_diff_1k.jpg"
-dest_files=["res://.godot/imported/raw_plank_wall_diff_1k.jpg-f4f674ad052d2147723727f98230da77.s3tc.ctex"]
+source_file="res://raw_plank_wall_1k/raw_plank_wall_arm_1k.jpg"
+dest_files=["res://.godot/imported/raw_plank_wall_arm_1k.jpg-b35acb79f29597e7a7a32fb91e537538.s3tc.ctex"]
 
 [params]
 

@@ -6,7 +6,10 @@ extends CharacterBody3D
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
+	$h.rotation.y = rotation.y
+	$h/v.rotation.x = rotation.x
+	$CollisionShape3D/MeshInstance3D.rotation.y = rotation.y
+	set_rotation(Vector3.ZERO)
 
 func _input(event: InputEvent) -> void:
 	const mouse_sensitivity := 0.1
