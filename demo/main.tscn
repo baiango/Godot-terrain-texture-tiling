@@ -40,7 +40,7 @@ albedo_texture = ExtResource("7_ym65u")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6pr0v"]
 render_priority = 0
 shader = ExtResource("1_jsbbp")
-shader_parameter/near_scale = Vector2(378, 378)
+shader_parameter/near_scale = Vector2(379, 379)
 shader_parameter/far_scale = Vector2(23, 23)
 shader_parameter/minimum_blend_distance = 1.5
 shader_parameter/blend_distance = 4.0

@@ -5,10 +5,12 @@ uniform sampler2D diffuse_texture : source_color;
 uniform sampler2D mask_texture;
 uniform sampler2D ambient_occlusion_roughness_metallic_texture;
 uniform sampler2D normal_texture;
-// The forest_leaves_04 texture size is shot in 2m. and the mesh is 757m big
-// So 757m/2m(378) near scale is recommend
-uniform vec2 near_scale = vec2(37.0);
-/* Use prime number on far_scale. So it never overlap exactly with near_scale at some point
+/*
+The forest_leaves_04 texture size is shot in 2m. and the mesh is 757m big
+So 757m/2m(378) near scale is recommend
+Use prime number on near_scale. (Not far_scale because near_scale is always bigger than it)
+So it never overlap exactly with near_scale at some point
+So the closest prime number to 378 is 379
 2, 3, 5, 7,
 11, 13, 17, 19,
 23, 29,
@@ -20,6 +22,7 @@ uniform vec2 near_scale = vec2(37.0);
 83, 89,
 97
 */
+uniform vec2 near_scale = vec2(37.0);
 uniform vec2 far_scale = vec2(5.0);
 uniform float minimum_blend_distance = 1.5;
 uniform float blend_distance = 3.0;
