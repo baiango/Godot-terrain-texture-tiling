@@ -10,9 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://brqc0edv15yml" path="res://mask texture.tres" id="4_ma41p"]
 [ext_resource type="Texture2D" uid="uid://bsqcwphqraxx8" path="res://leafy_grass_1k/leafy_grass_diff_1k.jpg" id="7_ym65u"]
 [ext_resource type="Texture2D" uid="uid://cyf2h6rye8jv" path="res://rocky_trail_02_1k/rocky_trail_02_arm_1k_out.jpg" id="8_4thul"]
+[ext_resource type="Script" path="res://hill/z-mesh.gd" id="8_a01rf"]
 [ext_resource type="Texture2D" uid="uid://c0d8dbp48pxwe" path="res://rocky_trail_02_1k/rocky_trail_02_diff_1k_out.jpg" id="9_j6wsg"]
 [ext_resource type="Texture2D" uid="uid://mkqmkf7ujvcu" path="res://rocky_trail_02_1k/rocky_trail_02_nor_gl_1k.exr" id="10_kwfu3"]
-[ext_resource type="Script" path="res://demo/z-mesh.gd" id="11_ttrt1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqd77"]
 render_priority = 0
@@ -20,8 +20,10 @@ shader = ExtResource("1_jsbbp")
 shader_parameter/scale_near = Vector2(8, 6)
 shader_parameter/scale_far = Vector2(2, 1.5)
 shader_parameter/scale_farther = Vector2(2, 2)
-shader_parameter/diffuse_stacking_far = 0.0
+shader_parameter/diffuse_stacking_near = 0.5
 shader_parameter/diffuse_stacking_farther = 0.0
+shader_parameter/diffuse_shift_scale_near = Vector2(0, 0)
+shader_parameter/diffuse_shift_scale_far = Vector2(0, 0)
 shader_parameter/minimum_blend_distance = 1.5
 shader_parameter/blend_distance_far = 5.0
 shader_parameter/blend_distance_farther = 6.8
@@ -46,14 +48,16 @@ albedo_texture = ExtResource("7_ym65u")
 render_priority = 0
 shader = ExtResource("1_jsbbp")
 shader_parameter/scale_near = Vector2(379, 379)
-shader_parameter/scale_far = Vector2(23, 23)
-shader_parameter/scale_farther = Vector2(2, 2)
-shader_parameter/diffuse_stacking_far = 0.5
-shader_parameter/diffuse_stacking_farther = 0.7
-shader_parameter/minimum_blend_distance = 1.5
+shader_parameter/scale_far = Vector2(47, 47)
+shader_parameter/scale_farther = Vector2(4, 4)
+shader_parameter/diffuse_stacking_near = 0.5
+shader_parameter/diffuse_stacking_farther = 0.9
+shader_parameter/diffuse_shift_scale_near = Vector2(0.714, 0.714)
+shader_parameter/diffuse_shift_scale_far = Vector2(0.367, 0.367)
+shader_parameter/minimum_blend_distance = 5.0
 shader_parameter/blend_distance_far = 3.5
-shader_parameter/blend_distance_farther = 6.8
-shader_parameter/macro_variation_strength = 0.035
+shader_parameter/blend_distance_farther = 8.0
+shader_parameter/macro_variation_strength = 0.078
 shader_parameter/desaturation_strength = 0.0
 shader_parameter/diffuse_texture = ExtResource("9_j6wsg")
 shader_parameter/mask_texture = ExtResource("4_ma41p")
@@ -136,7 +140,7 @@ material_override = SubResource("StandardMaterial3D_32nc6")
 cast_shadow = 0
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../../..")
-script = ExtResource("11_ttrt1")
+script = ExtResource("8_a01rf")
 
 [node name="hill2" type="MeshInstance3D" parent="obj"]
 material_override = SubResource("ShaderMaterial_6pr0v")
@@ -152,7 +156,7 @@ cast_shadow = 0
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_ccnoh")
-script = ExtResource("11_ttrt1")
+script = ExtResource("8_a01rf")
 
 [node name="lamp" type="MeshInstance3D" parent="obj"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04162, 138.125, -1.19209e-07)
@@ -184,9 +188,19 @@ light_volumetric_fog_energy = 4e+06
 light_size = 0.1
 shadow_enabled = true
 
+[node name="OmniLight3D" type="OmniLight3D" parent="obj"]
+editor_description = "light_color = 40000K"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.1349, 142.591, 20.4071)
+light_color = Color(0.596078, 0.729412, 1, 1)
+light_energy = 16.0
+light_volumetric_fog_energy = 500000.0
+shadow_enabled = true
+omni_range = 20.0
+omni_attenuation = 2.0
+
 [node name="player" type="CharacterBody3D" parent="."]
 editor_description = "Y 301m to hide the z-mesh from the hill"
-transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.84358e-07, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 300, -2)
+transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.84358e-07, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 138.266, -2)
 script = ExtResource("2_qp2ol")
 metadata/_edit_group_ = true
 

@@ -23,35 +23,37 @@ So the closest prime number to 378 is 379
 97
 */
 uniform vec2 scale_near = vec2(37.0);
-uniform vec2 scale_far = vec2(5.0);
-uniform vec2 scale_farther = vec2(2.0);
-const float CLAMP_MIN = 0.0;
-const float CLAMP_MAX = 1.0;
-uniform float diffuse_stacking_far = 0.5;
-uniform float diffuse_stacking_farther = 0.7;
-uniform float minimum_blend_distance = 1.5;
+uniform vec2 scale_far = vec2(5.0); // Recommend divided by 8 of scale_near
+uniform vec2 scale_farther = vec2(4.0); // Recommend 4
+uniform float diffuse_stacking_near = 0.5;
+uniform float diffuse_stacking_farther = 0.9;
+uniform vec2 diffuse_shift_scale_near = vec2(1.0); // You are supposed to decrease the scale
+uniform vec2 diffuse_shift_scale_far = vec2(1.0);
+uniform float minimum_blend_distance = 5.0;
 uniform float blend_distance_far = 3.5;
-uniform float blend_distance_farther = 6.8;
+uniform float blend_distance_farther = 8.0;
 uniform float macro_variation_strength = 0.03;
 uniform float desaturation_strength = 0.0;
 
 void fragment() {
+	const float CLAMP_MIN = 0.0;
+	const float CLAMP_MAX = 1.0;
+
 	// Setup texture
 	vec3 diffuse_near = texture(diffuse_texture, UV * scale_near).rgb;
 	vec3 diffuse_far = texture(diffuse_texture, UV * scale_far).rgb;
+	vec3 diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
 	vec3 macro_variation_map = texture(mask_texture, UV * 2.0).rgb;
 
 	// Diffuse texture stacking
-	float diffuse_stacking_clamped = clamp(diffuse_stacking_far, CLAMP_MIN, CLAMP_MAX);
-	vec3 tmp_diffuse_near = texture(diffuse_texture, UV * mix(scale_near, scale_far, 0.1) + 0.3).rgb;
-	diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_clamped);
+	vec3 tmp_diffuse_near = texture(diffuse_texture, UV * scale_near * diffuse_shift_scale_near).rgb;
+	diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_near);
 
-	vec3 tmp_diffuse_far = texture(diffuse_texture, UV * mix(scale_near, scale_far, 0.95) + 0.1).rgb;
-	diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_clamped);
+	vec3 tmp_diffuse_far = texture(diffuse_texture, UV * scale_far * diffuse_shift_scale_far).rgb;
+	diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_near);
 
-	float diffuse_stacking_farther_clamped = clamp(diffuse_stacking_farther, CLAMP_MIN, CLAMP_MAX);
-	vec3 tmp_diffuse_farther = texture(diffuse_texture, UV * scale_farther + 0.5).rgb;
-	vec3 diffuse_farther = mix(diffuse_far, tmp_diffuse_farther, diffuse_stacking_farther_clamped);
+	vec3 tmp_diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
+	diffuse_farther = mix(diffuse_farther, tmp_diffuse_farther, diffuse_stacking_farther);
 
 	// Z-buffer
 	float depth = texture(depth_texture, SCREEN_UV).x;
@@ -70,7 +72,7 @@ void fragment() {
 	// It doesn't clamp the white color clip for artistic choice
 	tmp_diffuse = max(tmp_diffuse - macro_variation_map * macro_variation_strength, CLAMP_MIN);
 	// Use it on bad texture for hiding identifiable landmark
-	// But it's much better to desaturate it by hand
+	// But it's much better to desaturate it by hand. Use it as a last resort
 	float dot_product = dot(vec3(1.0), tmp_diffuse) * (1.0 / 3.0);
 	tmp_diffuse = mix(tmp_diffuse, vec3(dot_product), desaturation_strength);
 

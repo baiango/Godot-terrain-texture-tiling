@@ -9,7 +9,7 @@ func _ready():
 #	view.print_tree_pretty()
 	pass
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var cam := get_viewport().get_camera_3d()
 
 	var cam_pos := cam.get_global_position()
