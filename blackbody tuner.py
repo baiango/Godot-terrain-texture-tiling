@@ -1,5 +1,5 @@
 # https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
-temperature = 40000
+temperature = 1000
 
 from math import log
 temperature = min(max(temperature, 1000), 40000)

@@ -29,9 +29,9 @@ shader_parameter/blend_distance_far = 5.0
 shader_parameter/blend_distance_farther = 6.8
 shader_parameter/macro_variation_strength = 0.05
 shader_parameter/desaturation_strength = 0.0
+shader_parameter/ambient_occlusion_roughness_metallic_texture = ExtResource("2_mpw6j")
 shader_parameter/diffuse_texture = ExtResource("1_odpny")
 shader_parameter/mask_texture = ExtResource("4_ma41p")
-shader_parameter/ambient_occlusion_roughness_metallic_texture = ExtResource("2_mpw6j")
 shader_parameter/normal_texture = ExtResource("4_jqdu1")
 
 [sub_resource type="BoxMesh" id="BoxMesh_778jp"]
@@ -59,9 +59,9 @@ shader_parameter/blend_distance_far = 3.5
 shader_parameter/blend_distance_farther = 8.0
 shader_parameter/macro_variation_strength = 0.078
 shader_parameter/desaturation_strength = 0.0
+shader_parameter/ambient_occlusion_roughness_metallic_texture = ExtResource("8_4thul")
 shader_parameter/diffuse_texture = ExtResource("9_j6wsg")
 shader_parameter/mask_texture = ExtResource("4_ma41p")
-shader_parameter/ambient_occlusion_roughness_metallic_texture = ExtResource("8_4thul")
 shader_parameter/normal_texture = ExtResource("10_kwfu3")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccnoh"]
@@ -185,7 +185,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0984955, 0)
 light_color = Color(1, 0.776471, 0, 1)
 light_energy = 2.0
 light_volumetric_fog_energy = 4e+06
-light_size = 0.1
+light_size = 0.13
 shadow_enabled = true
 
 [node name="OmniLight3D" type="OmniLight3D" parent="obj"]

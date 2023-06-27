@@ -1,9 +1,9 @@
 shader_type spatial;
 
 uniform sampler2D depth_texture : hint_depth_texture;
+uniform sampler2D ambient_occlusion_roughness_metallic_texture;
 uniform sampler2D diffuse_texture : source_color;
 uniform sampler2D mask_texture;
-uniform sampler2D ambient_occlusion_roughness_metallic_texture;
 uniform sampler2D normal_texture;
 /*
 The forest_leaves_04 texture size is shot in 2m. and the mesh is 757m big
@@ -91,8 +91,8 @@ void fragment() {
 	vec3 normal_map_far = texture(normal_texture, UV * scale_far).rgb;
 	normal_map = mix(normal_map, normal_map_far, blend_rate_far);
 
-	NORMAL_MAP = normal_map;
 	AO = arm_map.r;
 	ROUGHNESS = arm_map.g;
 	METALLIC = arm_map.b;
+	NORMAL_MAP = normal_map;
 }
