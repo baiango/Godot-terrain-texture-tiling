@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bedt2tm8nabv5"]
+[gd_scene load_steps=28 format=3 uid="uid://bedt2tm8nabv5"]
 
 [ext_resource type="ArrayMesh" uid="uid://dxus1lwl5oocg" path="res://hill/hill_Plane.res" id="1_5lw6i"]
 [ext_resource type="Shader" path="res://hill/terrain.gdshader" id="1_jsbbp"]
@@ -12,15 +12,19 @@
 [ext_resource type="Texture2D" uid="uid://cyf2h6rye8jv" path="res://rocky_trail_02_1k/rocky_trail_02_arm_1k_out.jpg" id="8_4thul"]
 [ext_resource type="Texture2D" uid="uid://c0d8dbp48pxwe" path="res://rocky_trail_02_1k/rocky_trail_02_diff_1k_out.jpg" id="9_j6wsg"]
 [ext_resource type="Texture2D" uid="uid://mkqmkf7ujvcu" path="res://rocky_trail_02_1k/rocky_trail_02_nor_gl_1k.exr" id="10_kwfu3"]
+[ext_resource type="Script" path="res://demo/z-mesh.gd" id="11_ttrt1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqd77"]
 render_priority = 0
 shader = ExtResource("1_jsbbp")
-shader_parameter/near_scale = Vector2(8, 5)
-shader_parameter/far_scale = Vector2(2, 1.25)
-shader_parameter/diffuse_stacking = 0.0
+shader_parameter/scale_near = Vector2(8, 6)
+shader_parameter/scale_far = Vector2(2, 1.5)
+shader_parameter/scale_farther = Vector2(2, 2)
+shader_parameter/diffuse_stacking_far = 0.0
+shader_parameter/diffuse_stacking_farther = 0.0
 shader_parameter/minimum_blend_distance = 1.5
-shader_parameter/blend_distance = 4.0
+shader_parameter/blend_distance_far = 5.0
+shader_parameter/blend_distance_farther = 6.8
 shader_parameter/macro_variation_strength = 0.05
 shader_parameter/desaturation_strength = 0.0
 shader_parameter/diffuse_texture = ExtResource("1_odpny")
@@ -41,11 +45,14 @@ albedo_texture = ExtResource("7_ym65u")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6pr0v"]
 render_priority = 0
 shader = ExtResource("1_jsbbp")
-shader_parameter/near_scale = Vector2(379, 379)
-shader_parameter/far_scale = Vector2(23, 23)
-shader_parameter/diffuse_stacking = 0.5
+shader_parameter/scale_near = Vector2(379, 379)
+shader_parameter/scale_far = Vector2(23, 23)
+shader_parameter/scale_farther = Vector2(2, 2)
+shader_parameter/diffuse_stacking_far = 0.5
+shader_parameter/diffuse_stacking_farther = 0.7
 shader_parameter/minimum_blend_distance = 1.5
-shader_parameter/blend_distance = 3.5
+shader_parameter/blend_distance_far = 3.5
+shader_parameter/blend_distance_farther = 6.8
 shader_parameter/macro_variation_strength = 0.035
 shader_parameter/desaturation_strength = 0.0
 shader_parameter/diffuse_texture = ExtResource("9_j6wsg")
@@ -110,39 +117,42 @@ material = SubResource("ShaderMaterial_rqd77")
 [node name="z-mesh" type="MeshInstance3D" parent="obj/wall"]
 mesh = SubResource("BoxMesh_778jp")
 
-[node name="floor" type="MeshInstance3D" parent="obj"]
+[node name="hill" type="MeshInstance3D" parent="obj"]
 visible = false
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../..")
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="obj/floor"]
+[node name="StaticBody3D" type="StaticBody3D" parent="obj/hill"]
+visible = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="obj/floor/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="obj/hill/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_o1cjh")
 
-[node name="z-mesh" type="MeshInstance3D" parent="obj/floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.100015, 0)
+[node name="z-mesh" type="MeshInstance3D" parent="obj/hill"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 material_override = SubResource("StandardMaterial3D_32nc6")
 cast_shadow = 0
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../../..")
+script = ExtResource("11_ttrt1")
 
-[node name="floor2" type="MeshInstance3D" parent="obj"]
+[node name="hill2" type="MeshInstance3D" parent="obj"]
 material_override = SubResource("ShaderMaterial_6pr0v")
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../..")
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
-[node name="z-mesh" type="MeshInstance3D" parent="obj/floor2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.100015, 0)
+[node name="z-mesh" type="MeshInstance3D" parent="obj/hill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 material_override = SubResource("StandardMaterial3D_32nc6")
 cast_shadow = 0
 mesh = ExtResource("1_5lw6i")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_ccnoh")
+script = ExtResource("11_ttrt1")
 
 [node name="lamp" type="MeshInstance3D" parent="obj"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04162, 138.125, -1.19209e-07)
@@ -175,7 +185,8 @@ light_size = 0.1
 shadow_enabled = true
 
 [node name="player" type="CharacterBody3D" parent="."]
-transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.59689e-08, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 138.156, -2)
+editor_description = "Y 301m to hide the z-mesh from the hill"
+transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.84358e-07, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 300, -2)
 script = ExtResource("2_qp2ol")
 metadata/_edit_group_ = true
 
@@ -208,3 +219,5 @@ environment = SubResource("Environment_jtn3q")
 editor_description = "light_color = 3300K"
 transform = Transform3D(0.750699, 0.57487, -0.325538, 0, 0.492758, 0.870166, 0.660644, -0.653233, 0.369913, 0, 144.204, 0)
 light_color = Color(1, 0.941176, 0.623529, 1)
+light_angular_distance = 0.5
+shadow_enabled = true
