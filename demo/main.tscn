@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bedt2tm8nabv5"]
+[gd_scene load_steps=29 format=3 uid="uid://bedt2tm8nabv5"]
 
 [ext_resource type="ArrayMesh" uid="uid://dxus1lwl5oocg" path="res://hill/hill_Plane.res" id="1_5lw6i"]
 [ext_resource type="Shader" path="res://hill/terrain.gdshader" id="1_jsbbp"]
@@ -84,6 +84,9 @@ albedo_texture = ExtResource("2_g0swj")
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l23jf"]
 material = SubResource("StandardMaterial3D_5g34e")
 
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_h0wwm"]
+dof_blur_far_distance = 300.0
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fcor6"]
 sky_top_color = Color(0, 0, 1, 1)
 sky_horizon_color = Color(1, 0.941176, 0.623529, 1)
@@ -165,13 +168,14 @@ skeleton = NodePath("../wall")
 metadata/_edit_group_ = true
 
 [node name="OmniLight3D" type="OmniLight3D" parent="obj/lamp"]
-editor_description = "light_color = 4500K"
-light_color = Color(1, 0.972549, 0.823529, 1)
+editor_description = "light_color = 4000K"
+light_color = Color(1, 0.807843, 0.65098, 1)
 light_energy = 16.0
-light_volumetric_fog_energy = 100000.0
+light_volumetric_fog_energy = 400000.0
 light_size = 0.1
 shadow_enabled = true
 omni_range = 30.0
+omni_attenuation = 1.5
 
 [node name="candle" type="MeshInstance3D" parent="obj"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 136.675, -3.62363)
@@ -182,11 +186,12 @@ metadata/_edit_group_ = true
 [node name="OmniLight3D" type="OmniLight3D" parent="obj/candle"]
 editor_description = "light_color = 1800K"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0984955, 0)
-light_color = Color(1, 0.776471, 0, 1)
+light_color = Color(1, 0.494118, 0, 1)
 light_energy = 2.0
 light_volumetric_fog_energy = 4e+06
 light_size = 0.13
 shadow_enabled = true
+omni_attenuation = 1.5
 
 [node name="OmniLight3D" type="OmniLight3D" parent="obj"]
 editor_description = "light_color = 40000K"
@@ -196,11 +201,11 @@ light_energy = 16.0
 light_volumetric_fog_energy = 500000.0
 shadow_enabled = true
 omni_range = 20.0
-omni_attenuation = 2.0
+omni_attenuation = 1.5
 
 [node name="player" type="CharacterBody3D" parent="."]
 editor_description = "Y 301m to hide the z-mesh from the hill"
-transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.84358e-07, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 138.266, -2)
+transform = Transform3D(-0.548264, -0.433229, -0.715346, 1.84358e-07, -0.855364, 0.518027, -0.836305, 0.284016, 0.468966, 2, 138.143, -2)
 script = ExtResource("2_qp2ol")
 metadata/_edit_group_ = true
 
@@ -222,6 +227,7 @@ margin = 0.2
 [node name="Camera3D" type="Camera3D" parent="player/h/v"]
 editor_description = "fov = 18mm"
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+attributes = SubResource("CameraAttributesPractical_h0wwm")
 current = true
 fov = 67.3801
 
@@ -230,8 +236,8 @@ editor_description = "sky_horizon_color = ground_horizon_color = 3300K"
 environment = SubResource("Environment_jtn3q")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-editor_description = "light_color = 3300K"
+editor_description = "light_color = 5600K"
 transform = Transform3D(0.750699, 0.57487, -0.325538, 0, 0.492758, 0.870166, 0.660644, -0.653233, 0.369913, 0, 144.204, 0)
-light_color = Color(1, 0.941176, 0.623529, 1)
-light_angular_distance = 0.5
+light_color = Color(1, 0.937255, 0.882353, 1)
+light_angular_distance = 0.1
 shadow_enabled = true

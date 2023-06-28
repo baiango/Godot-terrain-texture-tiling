@@ -67,8 +67,7 @@ void fragment() {
 
 	// Blending
 	vec3 tmp_diffuse = mix(diffuse_near, diffuse_far, blend_rate_far); // Camera blend
-	vec3 diffuse_far_stack = diffuse_farther;
-	tmp_diffuse = mix(tmp_diffuse, diffuse_far_stack, blend_rate_farther);
+	tmp_diffuse = mix(tmp_diffuse, diffuse_farther, blend_rate_farther);
 	// It doesn't clamp the white color clip for artistic choice
 	tmp_diffuse = max(tmp_diffuse - macro_variation_map * macro_variation_strength, CLAMP_MIN);
 	// Use it on bad texture for hiding identifiable landmark
