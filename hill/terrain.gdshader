@@ -39,6 +39,19 @@ void fragment() {
 	const float CLAMP_MIN = 0.0;
 	const float CLAMP_MAX = 1.0;
 
+	float blend_rate_far;
+	float blend_rate_farther;
+	{ // For limiting the scope of the code
+	// Z-buffer
+	float depth = texture(depth_texture, SCREEN_UV).x;
+	vec3 ndc = vec3(SCREEN_UV, depth);
+
+	vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
+	view.xyz /= view.w;
+	float linear_depth = -view.z;
+	blend_rate_far = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_far), CLAMP_MIN, CLAMP_MAX);
+	blend_rate_farther = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_farther), CLAMP_MIN, CLAMP_MAX);
+
 	// Setup texture
 	vec3 diffuse_near = texture(diffuse_texture, UV * scale_near).rgb;
 	vec3 diffuse_far = texture(diffuse_texture, UV * scale_far).rgb;
@@ -48,22 +61,10 @@ void fragment() {
 	// Diffuse texture stacking
 	vec3 tmp_diffuse_near = texture(diffuse_texture, UV * scale_near * diffuse_shift_scale_near).rgb;
 	diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_near);
-
 	vec3 tmp_diffuse_far = texture(diffuse_texture, UV * scale_far * diffuse_shift_scale_far).rgb;
 	diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_near);
-
 	vec3 tmp_diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
 	diffuse_farther = mix(diffuse_farther, tmp_diffuse_farther, diffuse_stacking_farther);
-
-	// Z-buffer
-	float depth = texture(depth_texture, SCREEN_UV).x;
-	vec3 ndc = vec3(SCREEN_UV, depth);
-
-	vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
-	view.xyz /= view.w;
-	float linear_depth = -view.z;
-	float blend_rate_far = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_far), CLAMP_MIN, CLAMP_MAX);
-	float blend_rate_farther = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_farther), CLAMP_MIN, CLAMP_MAX);
 
 	// Blending
 	vec3 tmp_diffuse = mix(diffuse_near, diffuse_far, blend_rate_far); // Camera blend
@@ -81,7 +82,7 @@ void fragment() {
 //	ALBEDO = diffuse_far;
 //	ALBEDO = diffuse_farther;
 //	ALBEDO = vec3(blend_rate_far, 0.0, blend_rate_farther); // Blue for easier to see
-
+	}{
 	// Setup texture
 	vec3 arm_map = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_near).rgb;
 	vec3 arm_map_far = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_far).rgb;
@@ -94,4 +95,5 @@ void fragment() {
 	ROUGHNESS = arm_map.g;
 	METALLIC = arm_map.b;
 	NORMAL_MAP = normal_map;
+	}
 }
