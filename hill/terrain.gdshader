@@ -36,64 +36,64 @@ uniform float macro_variation_strength = 0.03;
 uniform float desaturation_strength = 0.0;
 
 void fragment() {
-const float CLAMP_MIN = 0.0;
-const float CLAMP_MAX = 1.0;
+	const float CLAMP_MIN = 0.0;
+	const float CLAMP_MAX = 1.0;
 
-float blend_rate_far;
-float blend_rate_farther;
-{ // For limiting the scope of the local variables
-// Z-buffer
-float depth = texture(depth_texture, SCREEN_UV).x;
-vec3 ndc = vec3(SCREEN_UV, depth);
+	float blend_rate_far;
+	float blend_rate_farther;
+	{ // For limiting the scope of the local variables
+	// Z-buffer
+	float depth = texture(depth_texture, SCREEN_UV).x;
+	vec3 ndc = vec3(SCREEN_UV, depth);
 
-vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
-view.xyz /= view.w;
-float linear_depth = -view.z;
-blend_rate_far = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_far), CLAMP_MIN, CLAMP_MAX);
-blend_rate_farther = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_farther), CLAMP_MIN, CLAMP_MAX);
+	vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
+	view.xyz /= view.w;
+	float linear_depth = -view.z;
+	blend_rate_far = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_far), CLAMP_MIN, CLAMP_MAX);
+	blend_rate_farther = clamp((linear_depth - minimum_blend_distance) / pow(2.0, blend_distance_farther), CLAMP_MIN, CLAMP_MAX);
 
-// Setup texture
-vec3 diffuse_near = texture(diffuse_texture, UV * scale_near).rgb;
-vec3 diffuse_far = texture(diffuse_texture, UV * scale_far).rgb;
-vec3 diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
+	// Setup texture
+	vec3 diffuse_near = texture(diffuse_texture, UV * scale_near).rgb;
+	vec3 diffuse_far = texture(diffuse_texture, UV * scale_far).rgb;
+	vec3 diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
 
-// Diffuse texture stacking
-vec3 tmp_diffuse_near = texture(diffuse_texture, UV * scale_near * diffuse_shift_scale_near).rgb;
-diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_near);
-vec3 tmp_diffuse_far = texture(diffuse_texture, UV * scale_far * diffuse_shift_scale_far).rgb;
-diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_near);
-vec3 tmp_diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
-diffuse_farther = mix(diffuse_farther, tmp_diffuse_farther, diffuse_stacking_farther);
+	// Diffuse texture stacking
+	vec3 tmp_diffuse_near = texture(diffuse_texture, UV * scale_near * diffuse_shift_scale_near).rgb;
+	diffuse_near = mix(diffuse_near, tmp_diffuse_near, diffuse_stacking_near);
+	vec3 tmp_diffuse_far = texture(diffuse_texture, UV * scale_far * diffuse_shift_scale_far).rgb;
+	diffuse_far = mix(diffuse_far, tmp_diffuse_far, diffuse_stacking_near);
+	vec3 tmp_diffuse_farther = texture(diffuse_texture, UV * scale_farther).rgb;
+	diffuse_farther = mix(diffuse_farther, tmp_diffuse_farther, diffuse_stacking_farther);
 
-// Blending
-vec3 diffuse = mix(diffuse_near, diffuse_far, blend_rate_far); // Camera blend
-diffuse = mix(diffuse, diffuse_farther, blend_rate_farther);
-// It doesn't clamp the white color clip for artistic choice
-vec3 macro_variation_map = texture(mask_texture, UV * 2.0).rgb;
-diffuse = max(diffuse - macro_variation_map * macro_variation_strength, CLAMP_MIN);
-// Use it on bad texture for hiding identifiable landmark
-// But it's much better to desaturate it by hand. Use it as a last resort
-float dot_product = dot(vec3(1.0), diffuse) * (1.0 / 3.0);
-diffuse = mix(diffuse, vec3(dot_product), desaturation_strength);
+	// Blending
+	vec3 diffuse = mix(diffuse_near, diffuse_far, blend_rate_far); // Camera blend
+	diffuse = mix(diffuse, diffuse_farther, blend_rate_farther);
+	// It doesn't clamp the white color clip for artistic choice
+	vec3 macro_variation_map = texture(mask_texture, UV * 2.0).rgb;
+	diffuse = max(diffuse - macro_variation_map * macro_variation_strength, CLAMP_MIN);
+	// Use it on bad texture for hiding identifiable landmark
+	// But it's much better to desaturate it by hand. Use it as a last resort
+	float dot_product = dot(vec3(1.0), diffuse) * (1.0 / 3.0);
+	diffuse = mix(diffuse, vec3(dot_product), desaturation_strength);
 
-ALBEDO = diffuse;
-// Debug
-//ALBEDO = diffuse_near;
-//ALBEDO = diffuse_far;
-//ALBEDO = diffuse_farther;
-//ALBEDO = vec3(blend_rate_far, 0.0, blend_rate_farther); // Blue for easier to see
-}{
-// Setup texture
-vec3 arm_map = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_near).rgb;
-vec3 arm_map_far = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_far).rgb;
-arm_map = mix(arm_map, arm_map_far, blend_rate_far);
-vec3 normal_map = texture(normal_texture, UV * scale_near).rgb;
-vec3 normal_map_far = texture(normal_texture, UV * scale_far).rgb;
-normal_map = mix(normal_map, normal_map_far, blend_rate_far);
+	ALBEDO = diffuse;
+	// Debug
+	//ALBEDO = diffuse_near;
+	//ALBEDO = diffuse_far;
+	//ALBEDO = diffuse_farther;
+	//ALBEDO = vec3(blend_rate_far, 0.0, blend_rate_farther); // Blue for easier to see
+	}{
+	// Setup texture
+	vec3 arm_map = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_near).rgb;
+	vec3 arm_map_far = texture(ambient_occlusion_roughness_metallic_texture, UV * scale_far).rgb;
+	arm_map = mix(arm_map, arm_map_far, blend_rate_far);
+	vec3 normal_map = texture(normal_texture, UV * scale_near).rgb;
+	vec3 normal_map_far = texture(normal_texture, UV * scale_far).rgb;
+	normal_map = mix(normal_map, normal_map_far, blend_rate_far);
 
-AO = arm_map.r;
-ROUGHNESS = arm_map.g;
-METALLIC = arm_map.b;
-NORMAL_MAP = normal_map;
-}
+	AO = arm_map.r;
+	ROUGHNESS = arm_map.g;
+	METALLIC = arm_map.b;
+	NORMAL_MAP = normal_map;
+	}
 }
